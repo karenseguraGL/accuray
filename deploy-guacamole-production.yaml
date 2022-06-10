@@ -54,7 +54,7 @@ properties:
       azureFile:
         sharename: acishare
         storageAccountName: trainingcentersa
-        storageAccountKey: H/0OZT6ew25HjCiuix+TAFCjqvQ4KyGFxohtd7G1Uknm4dRcfrZilf0ytwQ39k4HJiWMg8f6S94gK2C7kUSnGg==  
+        storageAccountKey: enterkey 
   ipAddress:
     ports:
     - port: 443
