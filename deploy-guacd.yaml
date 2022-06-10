@@ -1,12 +1,12 @@
 api-version: 2019-12-01
 location: eastus
-name: preprod-caddy-guacd
+name: trainingcenter-caddy-guacd
 properties:
   containers:
   - name: caddy-with-ssl
     properties:
       image: caddy:2.3.0
-      command: ["caddy", "reverse-proxy", "--from", "preprod-caddy-guacd.eastus.azurecontainer.io", "--to", "localhost:4822"]
+      command: ["caddy", "reverse-proxy", "--from", "trainingcenter-caddy-guacd.eastus.azurecontainer.io", "--to", "localhost:4822"]
       ports:
       - port: 443
         protocol: TCP
@@ -37,7 +37,7 @@ properties:
     - port: 4822
       protocol: TCP
     type: Public
-    dnsNameLabel: 'preprod-caddy-guacd'
+    dnsNameLabel: 'trainingcenter-caddy-guacd'
   osType: Linux
 tags: null
 type: Microsoft.ContainerInstance/containerGroups
