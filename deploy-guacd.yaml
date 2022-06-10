@@ -1,0 +1,43 @@
+api-version: 2019-12-01
+location: eastus
+name: preprod-caddy-guacd
+properties:
+  containers:
+  - name: caddy-with-ssl
+    properties:
+      image: caddy:2.3.0
+      command: ["caddy", "reverse-proxy", "--from", "preprod-caddy-guacd.eastus.azurecontainer.io", "--to", "localhost:4822"]
+      ports:
+      - port: 443
+        protocol: TCP
+      resources:
+        requests:
+          cpu: 2.0
+          memoryInGB: 2
+      volumeMounts:
+      - name: caddy-data
+        mountPath: /data
+  - name: guacamole
+    properties:
+      image: guacamole/guacd
+      ports:
+      - port: 4822
+        protocol: TCP
+      resources:
+        requests:
+          cpu: 2.0
+          memoryInGB: 2
+  volumes:
+    - name: caddy-data
+      emptyDir: {}
+  ipAddress:
+    ports:
+    - port: 443
+      protocol: TCP
+    - port: 4822
+      protocol: TCP
+    type: Public
+    dnsNameLabel: 'preprod-caddy-guacd'
+  osType: Linux
+tags: null
+type: Microsoft.ContainerInstance/containerGroups

@@ -1,0 +1,66 @@
+api-version: 2019-12-01
+location: eastus
+name: accuray-guacamole
+properties:
+  containers:
+  - name: caddy
+    properties:
+      image: caddy:2.3.0
+      command: ["caddy", "reverse-proxy", "--from", "accuray-guacamole.eastus.azurecontainer.io", "--to", "localhost:8080"]
+      ports:
+      - port: 443
+        protocol: TCP
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 4
+      volumeMounts:
+      - name: caddy-data
+        mountPath: /data
+  - name: guacamole
+    properties:
+      image: guacamole/guacamole
+      ports:
+      - port: 8080
+        protocol: TCP
+      resources:
+        requests:
+          cpu: 3.0
+          memoryInGB: 12
+      volumeMounts:    
+      - mountPath: /aci/guacamole/
+        name: filesharevolume
+      environmentVariables:
+        - name: 'GUACD_HOSTNAME'
+          secureValue: 'trainingcenter-caddy-guacd.eastus.azurecontainer.io'
+        - name: 'GUACD_PORT'
+          secureValue: '4822'
+        - name: 'GUACAMOLE_HOME'
+          secureValue: '/aci/guacamole/'  
+        - name: 'MYSQL_HOSTNAME'
+          secureValue: 'trainingcenter-mysql-guacamole.mysql.database.azure.com'
+        - name: 'MYSQL_DATABASE'
+          secureValue: 'guacamoledb'
+        - name: 'MYSQL_USER'
+          secureValue: 'accurayguacamole@trainingcenter-mysql-guacamole'
+        - name: 'MYSQL_PASSWORD'
+          secureValue: 'Guacauser2021!'
+        - name: 'MYSQL_PORT'
+          secureValue: '3306'
+  volumes:
+    - name: caddy-data
+      emptyDir: {}
+    - name: filesharevolume
+      azureFile:
+        sharename: acishare
+        storageAccountName: trainingcentersa
+        storageAccountKey: H/0OZT6ew25HjCiuix+TAFCjqvQ4KyGFxohtd7G1Uknm4dRcfrZilf0ytwQ39k4HJiWMg8f6S94gK2C7kUSnGg==  
+  ipAddress:
+    ports:
+    - port: 443
+      protocol: TCP
+    type: Public
+    dnsNameLabel: 'accuray-guacamole'
+  osType: Linux
+tags: null
+type: Microsoft.ContainerInstance/containerGroups
